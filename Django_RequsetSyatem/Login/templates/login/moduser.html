@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 offset-md-2">
+            <h2 class="text-center">修改密码</h2>
+            <table class="table table-hover row">
+                <tbody class="w-100">
+                <tr class="row">
+                    <th class="col-4">用户名</th>
+                    <th class="col-8">{{ user }}</th>
+                </tr>
+                </tbody>
+            </table>
+            <form class='form-login' action="/mod/" method="post" enctype="multipart/form-data">
+                {% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+                {% csrf_token %}
+                {{ change_form.as_p }}
+                <button type="reset" class="btn btn-default pull-left">重置</button>
+                <button type="submit" class="btn btn-primary pull-right">修改</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

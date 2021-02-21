@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            {% if message %}
+                <div class="alert alert-warning">{{ message }}</div>
+            {% endif %}
+            {% csrf_token %}
+            <h2 class="text-center">User information</h2>
+            <a href="/mod/" class="btn btn-info" role="button">修改密码</a>
+            <table class="table table-hover row">
+                <thead class="thead-light w-100">
+                    <tr class="row">
+                        <th class="col-4">类别</th>
+                        <th class="col-8">内容</th>
+                    </tr>
+                </thead>
+                <tbody class="w-100">
+                {% for field in user_form %}
+                <tr class="row">
+                    <th class="col-4">{{ field.label }}</th>
+                    <th class="col-8">{{ field.value }}</th>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
