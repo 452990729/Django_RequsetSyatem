@@ -17,7 +17,7 @@
                 <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalR">拒绝</button>
                 </br>
                 {% endif %}
-            {% elif CTL == 'normal' %}
+            {% elif CTL == 'normal' and RequestStatus == "已提交, 待接受" %}
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModalD">删除</button>
             {% endif %}
 

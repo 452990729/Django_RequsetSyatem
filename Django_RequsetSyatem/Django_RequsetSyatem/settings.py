@@ -171,4 +171,4 @@ CKEDITOR_CONFIGS = {
 
 
 CRONJOBS = [
-('21 * * * *', 'RequstAnswer.ScheduledTask.MakeDate', '>>'+os.path.join(BASE_DIR, 'RequstAnswer/task.log')),]
+('58 * * * *', 'RequstAnswer.ScheduledTask.MakeDate', '>>'+os.path.join(BASE_DIR, 'RequstAnswer/task.log')),]
