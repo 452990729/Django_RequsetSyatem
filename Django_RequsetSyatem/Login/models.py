@@ -4,4 +4,4 @@ from django.contrib.auth.models import AbstractUser
 
 
 class LoginUser(AbstractUser):
-    info_right = models.CharField(max_length=32,default='nobody')
+    info_right = models.CharField(max_length=32,default='normal')

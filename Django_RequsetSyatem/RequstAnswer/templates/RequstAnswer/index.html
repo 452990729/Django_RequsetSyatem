@@ -16,6 +16,7 @@
                     <th class="text-center">项目类型</th>
                     <th class="text-center">预约时间</th>
                     <th class="text-center">发起预约时间</th>
+                    <th class="text-center">预约人员</th>
                     <th class="text-center">预约状态</th>
                 </tr>
                 </thead>
@@ -42,10 +43,11 @@
               'columns': [
               {'data': '预约编号',
                   'render': function (data){
-                      return '<a href="/RequstAnswer/'+data+'/">'+data+'</a>'}},
+                      return '<a href="/RequstAnswer/'+data+'/">'+'NPSX'+data+'</a>'}},
               {'data': '项目类型'},
               {'data': '预约时间'},
               {'data': '发起预约时间'},
+              {'data': '预约人员'},
               {'data': '预约状态'},
               ],
               'language': {

@@ -14,6 +14,14 @@ def hash_code(s, hk='lxf'):
     h.update(s.encode())
     return h.hexdigest()
 
+def GetCTL(request):
+    user = request.session['user_name']
+    if models.LoginUser.objects.get(username=user).info_right == 'admin':
+        CTL = 'admin'
+    else:
+        CTL = 'normal'
+    return CTL
+
 def login(request):
     if request.session.get('is_login') == True:
         return redirect('/index/')
@@ -79,6 +87,7 @@ def HomePage(request):
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
     user = request.session['user_name']
+    CTL = GetCTL(request)
     user_model = models.LoginUser.objects.get(username=user)
     form = forms.HomeForm()
     user_form = forms.HomeForm(instance=user_model)
@@ -88,10 +97,11 @@ def ModUser(request):
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
     user = request.session['user_name']
+    CTL = GetCTL(request)
     user_model = models.LoginUser.objects.get(username=user)
     if request.method == "POST":
         change_form = forms.ChangePassForm(request.POST, instance=user_model)
-        message = "please check in the content!"
+        message = "请检查输入内容！"
         if change_form.is_valid():
             old_password = change_form.cleaned_data['password']
             new_password1 = change_form.cleaned_data['new_password1']
@@ -112,4 +122,7 @@ def ModUser(request):
     return render(request, 'login/moduser.html', locals())
 
 def WebHome(request):
+    if request.session.get('is_login') == None:
+        return render(request, 'LoginWarning.html', locals())
+    CTL = GetCTL(request)
     return render(request,'login/webhome.html', locals())

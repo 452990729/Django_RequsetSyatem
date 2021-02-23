@@ -33,6 +33,7 @@ urlpatterns = [
     path('notice/', include('Notice.urls', namespace='notice')),
     path('captcha', include('captcha.urls')),
     path('RequstAnswer/', include(('RequstAnswer.urls', 'RequstAnswer'), namespace='RequstAnswer')),
+    path('Comment/', include(('Comment.urls', 'Comment'), namespace='Comment')),
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     path('Upload/', RequstAnswerViews.Upload),
     path('', views.WebHome),

@@ -32,7 +32,7 @@ def MakeDate():
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'lixuefei'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周一 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周一 '+i+' 李雪飞'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
             elif sft == 2:
@@ -41,7 +41,7 @@ def MakeDate():
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'luojunjie'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周二 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周二 '+i+' 罗俊杰(遗传咨询)'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
             elif sft == 3:
@@ -51,14 +51,14 @@ def MakeDate():
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'wangdong'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周三 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周三 '+i+' 王栋'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
                 for i in list_tmp2:
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'huyongfei'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周三 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周三 '+i+' 胡永飞'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
             elif sft == 4:
@@ -68,14 +68,14 @@ def MakeDate():
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'huyongfei'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周四 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周四 '+i+' 胡永飞'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
                 for i in list_tmp2:
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'zhoujiajian'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周四 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周四 '+i+' 周家健'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
             elif sft == 5:
@@ -84,7 +84,7 @@ def MakeDate():
                     new_date = models.RequestTargetInfo()
                     new_date.TargetName = 'zhoujiajian'
                     new_date.TargetTrueDate = date
-                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周五 '+i
+                    new_date.TargetData = date.strftime('%Y-%m-%d')+' 周五 '+i+' 周家健'
                     new_date.TargetStatus = '未预约'
                     new_date.save()
         else:

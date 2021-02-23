@@ -4,9 +4,18 @@ from Login.models import LoginUser
 
 # Create your views here.
 
+def GetCTL(request):
+    user = request.session['user_name']
+    if LoginUser.objects.get(username=user).info_right == 'admin':
+        CTL = 'admin'
+    else:
+        CTL = 'normal'
+    return CTL
+
 def CommentNoticeList(request):
     isactive = ''
     user = request.session['user_name']
+    CTL = GetCTL(request)
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
     notices = LoginUser.objects.get(username=user).notifications.unread()
@@ -16,6 +25,7 @@ def CommentNoticeList(request):
 def CommentNoticeUpdate(request):
     isactive = ''
     user = request.session['user_name']
+    CTL = GetCTL(request)
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
     notice_id = request.GET.get('notice_id')

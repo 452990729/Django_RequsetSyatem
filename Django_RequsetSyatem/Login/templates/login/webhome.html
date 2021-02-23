@@ -5,7 +5,12 @@
 {% block content %}
         <div class="col-md-8 offset-md-2">
                 <h1 class="text-center">欢迎</h1>
-                <h4 class="text-center">生物信息预约系统</h4>
+                <h4 class="text-center">生物信息咨询预约系统</h4>
+                {% if request.session.is_login %}
                 <img src="{% static "dist/img/homepage.png" %}"  class="img-fluid d-block mx-auto" alt="HomePage">
+                {% else %}
+                </br></br></br></br>
+                <h2 class="text-center">请先登录!</h2>
+                {% endif %}
         </div>
 {% endblock %}

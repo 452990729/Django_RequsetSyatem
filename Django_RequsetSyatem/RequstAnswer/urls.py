@@ -7,7 +7,8 @@ urlpatterns = [
     path('sub/', views.SubIndex, name="SubIndex"),
     path('sub/<str:project>/', views.SubDetail, name='SubDetail'),
     path('sub/<str:project>/check/', views.CheckProject, name='CheckProject'),
-    path('<str:project>/', views.Detail, name='Detail'),
+    path('sub/<str:project>/reject/', views.RejectProject, name='RejectProject'),
+    path('<str:project>/', views.SubDetail, name='Detail'),
     path('<str:project>/del/', views.Del, name='Del'),
     path('', views.Index, name="Index"),
 ]

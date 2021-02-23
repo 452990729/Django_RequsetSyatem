@@ -23,7 +23,7 @@ class HomeForm(forms.ModelForm):
     class Meta:
         model = LoginUser
         fields = ['username', 'password', 'email', 'info_right']
-    info_right = forms.CharField(label="上级", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    info_right = forms.CharField(label="账户类型", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
 #    subinfor = forms.CharField(label="下属", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 class ChangePassForm(forms.ModelForm):

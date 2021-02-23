@@ -5,17 +5,27 @@ from django.shortcuts import render,redirect,HttpResponse
 from . import models
 from .forms import NewRequest
 from Login.models import LoginUser
+from Comment.models import Comment
+from Comment.forms import CommentForm
 from django.utils import timezone
 from notifications.signals import notify
 
 # Create your views here.
 
+def GetCTL(request):
+    user = request.session['user_name']
+    if LoginUser.objects.get(username=user).info_right == 'admin':
+        CTL = 'admin'
+    else:
+        CTL = 'normal'
+    return CTL
 
 def CreateNew(request):
     isactive = 'new'
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
     user = request.session['user_name']
+    CTL = GetCTL(request)
     if request.method == "POST":
         NewRequestForm = NewRequest(request.POST)
         message = "请检查输入！"
@@ -24,6 +34,8 @@ def CreateNew(request):
             RequestContent = NewRequestForm.cleaned_data['RequestContent']
             RequestTargetData = NewRequestForm.cleaned_data['RequestTargetData']
             RequestEmail = NewRequestForm.cleaned_data['RequestEmail']
+            RequestUserName = NewRequestForm.cleaned_data['RequestUserName']
+            RequestTargetGroup = NewRequestForm.cleaned_data['RequestTargetGroup']
             new_requset = models.RequestInfo()
             new_requset.RequestUser = user
             new_requset.RequestEmail = RequestEmail
@@ -31,6 +43,9 @@ def CreateNew(request):
             new_requset.RequestTargetData = RequestTargetData
             new_requset.RequestTarget = models.RequestTargetInfo.objects.get(TargetData=RequestTargetData).TargetName
             new_requset.RequestType = RequestType
+            new_requset.RequestUserName = RequestUserName
+            new_requset.RequestTargetGroup = RequestTargetGroup
+            new_requset.RequestStatus = '已提交, 待接受'
             new_requset.save()
             notify.send(
                 LoginUser.objects.get(username=user),
@@ -52,29 +67,33 @@ def Index(request):
         return render(request, 'LoginWarning.html', locals())
     data_list = []
     user = request.session['user_name']
+    CTL = GetCTL(request)
     list_ob = models.RequestInfo.objects.order_by('RequestTargetData').filter(RequestUser=user)
     for data_info in list_ob:
         data_list.append({
             '预约编号':data_info.RequestNumber,
             '项目类型':data_info.RequestType,
             '预约时间':data_info.RequestTargetData,
-            '发起预约时间':data_info.RequestDate.strftime('%Y-%m-%d'),
+            '发起预约时间':data_info.RequestDate.strftime('%Y-%m-%d %H:%M'),
+            '预约人员':data_info.RequestUserName,
             '预约状态':data_info.RequestStatus,
         })
     data_dic = {}
     data_dic['userrequest'] = data_list
-    return render(request, 'RequstAnswer/index.html', data_dic)
+    data_dic['CTL'] = CTL
+    return render(request, 'RequstAnswer/index.html', data_dic,)
 
 def Detail(request, project):
     isactive = 'Requestinfor'
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
+    CTL = GetCTL(request)
     Project_model = models.RequestInfo.objects.get(RequestNumber=project)
     RequestNumber = Project_model.RequestNumber
     RequestType = Project_model.RequestType
 #    RequestUser = Project_model.RequestUser
     RequestContent = Project_model.RequestContent
-    RequestDate = Project_model.RequestDate.strftime('%Y-%m-%d')
+    RequestDate = Project_model.RequestDate.strftime('%Y-%m-%d %H:%M')
     RequestTargetData = Project_model.RequestTargetData
     RequestStatus = Project_model.RequestStatus
     return render(request, 'RequstAnswer/detail.html', locals())
@@ -103,6 +122,7 @@ def SubIndex(request):
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
     user = request.session['user_name']
+    CTL = GetCTL(request)
     list_project_model = models.RequestInfo.objects.order_by('RequestStatus').filter(RequestTarget=user)
     data_list = []
     for data_info in list_project_model:
@@ -110,24 +130,33 @@ def SubIndex(request):
             '预约编号':data_info.RequestNumber,
             '项目类型':data_info.RequestType,
             '预约时间':data_info.RequestTargetData,
-            '预约人员':data_info.RequestUser,
+            '预约人员':data_info.RequestUserName,
+            '课题组':data_info.RequestTargetGroup,
             '预约状态':data_info.RequestStatus,
         })
     data_dic = {}
     data_dic['userrequest'] = data_list
+    data_dic['CTL'] = CTL
     return render(request, 'RequstAnswer/subindex.html', data_dic)
 
 def SubDetail(request, project):
     isactive = 'sub'
     if request.session.get('is_login') == None:
         return render(request, 'LoginWarning.html', locals())
+    CTL = GetCTL(request)
     Project_model = models.RequestInfo.objects.get(RequestNumber=project)
     RequestNumber = Project_model.RequestNumber
     RequestType = Project_model.RequestType
     RequestUser = Project_model.RequestUser
+    RequestTargetGroup = Project_model.RequestTargetGroup
+    RequestUserName = Project_model.RequestUserName
+    RequestEmail = Project_model.RequestEmail
     RequestContent = Project_model.RequestContent
     RequestTargetData = Project_model.RequestTargetData
     RequestStatus = Project_model.RequestStatus
+    RequestDate = Project_model.RequestDate.strftime('%Y-%m-%d %H:%M')
+    comments = Comment.objects.filter(Project=project)
+    comment_form = CommentForm()
     return render(request, 'RequstAnswer/subdetail.html', locals())
 
 def CheckProject(request, project):
@@ -142,8 +171,28 @@ def CheckProject(request, project):
         verb='确认了预约',
         target=Project_model,
     )
-    Project_model.RequestStatus = '已确认'
+    Project_model.RequestStatus = '已提交, 已接受'
     Project_model.save()
+    return SubIndex(request)
+
+def RejectProject(request, project):
+    isactive = 'sub'
+    if request.session.get('is_login') == None:
+        return render(request, 'LoginWarning.html', locals())
+    Project_model = models.RequestInfo.objects.get(RequestNumber=project)
+    user = request.session['user_name']
+    notify.send(
+        LoginUser.objects.get(username=user),
+        recipient=LoginUser.objects.get(username=Project_model.RequestUser),
+        verb='拒绝了预约',
+        target=Project_model,
+    )
+    Project_model.RequestStatus = '已提交, 拒绝'
+    Project_model.save()
+    RequestTargetData = Project_model.RequestTargetData
+    RequestTargetInfoModel = models.RequestTargetInfo.objects.get(TargetData=RequestTargetData)
+    RequestTargetInfoModel.TargetStatus = '未预约'
+    RequestTargetInfoModel.save()
     return SubIndex(request)
 
 def Upload(request):
