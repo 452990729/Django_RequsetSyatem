@@ -1,7 +1,7 @@
 import hashlib
 from django.shortcuts import render,redirect
 from django.contrib import auth
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password,check_password
 from . import models
 from . import forms
 from .forms import UserForm,RegisterForm
@@ -106,11 +106,11 @@ def ModUser(request):
             old_password = change_form.cleaned_data['password']
             new_password1 = change_form.cleaned_data['new_password1']
             new_password2 = change_form.cleaned_data['new_password2']
-            if user_model.check_password(old_password, user_model.password):
+            if old_password == user_model.password:
                 if new_password1 == new_password2:
                     user_model.password = make_password(new_password1)
                     user_model.save()
-                    return render(request, 'login/homepage.html', locals())
+                    return redirect('/index/')
                 else:
                     message = '两次输入密码不一致'
                     return render(request, 'login/moduser.html', locals())
